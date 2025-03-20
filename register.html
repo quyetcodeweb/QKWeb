@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng ký</title>
+    <link rel="stylesheet" href="register.css">
+</head>
+
+<body>
+    <form class="form_register">
+        <p class="form_title">Sign Up</p>
+        <div class="form_text">
+            <input type="text" name="username" id="username" placeholder="Enter your name" required>
+            <input type="email" name="emailuser" id="emailuser" placeholder="Enter your email" required>
+            <input type="password" name="passworduser" id="passworduser" placeholder="Create Password" required>
+            <input type="password" name="passwordconfirm" id="passwordconfirm" placeholder="Confirm Password" required>
+        </div>
+        <div class="form_button">
+            <button type="submit">Sign Up</button>
+        </div>
+        <div class="form_footer_register">
+            <a>Already have an account? <a href="login.html">Login now</a></a>
+        </div>
+    </form>
+</body>
+<script>
+    document.querySelector(".form_register").addEventListener("submit", async (event) => {
+        event.preventDefault(); // Ngăn chặn form reload trang
+
+        const usernameInput = document.getElementById("username");
+        const emailInput = document.getElementById("emailuser");
+        const passwordInput = document.getElementById("passworduser");
+        const passwordConfirmInput = document.getElementById("passwordconfirm");
+
+        const username = usernameInput.value.trim();
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
+        const passwordconfirm = passwordConfirmInput.value;
+
+        // Biểu thức kiểm tra email hợp lệ
+        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+        // Kiểm tra nếu email không hợp lệ
+        if (!emailPattern.test(email)) {
+            alert("❌ Email không hợp lệ! Vui lòng nhập lại.");
+            return;
+        }
+
+        // Kiểm tra nếu mật khẩu xác nhận không trùng khớp
+        if (password !== passwordconfirm) {
+            alert("❌ Mật khẩu xác nhận không khớp!");
+            return;
+        }
+
+        // Gửi dữ liệu lên server
+        const response = await fetch("http://localhost:5000/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, email, password, passwordconfirm })
+        });
+
+        const data = await response.json();
+        alert(data.message);
+
+        // Xóa thông tin nhập sau khi đăng ký thành công
+        if (response.ok) {
+            usernameInput.value = "";
+            emailInput.value = "";
+            passwordInput.value = "";
+            passwordConfirmInput.value = "";
+        }
+    });
+</script>
+
+
+
+
+</html>
